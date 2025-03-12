@@ -30,15 +30,17 @@ jobs:
             jobs:
               - type: "spider"
                 parameters:
+                  context: "Test Context"
                   url: "https://scientificamerican.com"
             
               - type: "passiveScan-config"
                 parameters:
+                  context: "Test Context"
                   maxAlertsPerRule: 10
             
               - type: "report"
                 parameters:
-                  template: "modern-html"
+                  template: "traditional-html"
                   reportFile: "/zap/wrk/zap_report.html"
                   reportTitle: "ZAP Security Scan Report"
                   reportDescription: "ZAP automated security scan report."
