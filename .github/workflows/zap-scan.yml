@@ -30,11 +30,12 @@ jobs:
 
       - name: Run ZAP Baseline Scan test
         run: |
-          docker run --rm \
-          -v $(pwd)/baseline.conf:/home/zap/baseline.conf \
-          -v $(pwd)/zap_report.html:/home/zap/zap_report.html \
-          ghcr.io/zaproxy/zaproxy:stable \
-          zap.sh -cmd -autorun /home/zap/baseline.conf
+            docker run --rm \
+            -v "$(pwd)/baseline.conf:/home/zap/baseline.conf" \
+            -v "$(pwd)/zap_report.html:/home/zap/zap_report.html" \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap.sh -cmd -autorun /home/zap/baseline.conf
+        
 
 
 
