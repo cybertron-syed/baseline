@@ -20,14 +20,17 @@ jobs:
       - name: Create baseline.conf
         run: |
           cat <<EOF > $GITHUB_WORKSPACE/baseline.conf
-          target=https://scientificamerican.com
-          format=html
-          output=zap_report.html
-          minLevel=Low
-          reportTitle=ZAP Security Scan Report
-          contextFile=zap_context.context
+          {
+            "target": "https://scientificamerican.com",
+            "format": "html",
+            "output": "zap_report.html",
+            "minLevel": "Low",
+            "reportTitle": "ZAP Security Scan Report",
+            "contextFile": "zap_context.context"
+          }
           EOF
           cat $GITHUB_WORKSPACE/baseline.conf  # Verify contents
+
 
       - name: Run ZAP Baseline Scan
         run: |
