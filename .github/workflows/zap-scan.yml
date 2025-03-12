@@ -21,6 +21,30 @@ jobs:
           mkdir -p $GITHUB_WORKSPACE/zap_wrk
           chmod -R 777 $GITHUB_WORKSPACE/zap_wrk
 
+      - name: Create baseline.conf (Automation Plan)
+        run: |
+          cat <<EOF > $GITHUB_WORKSPACE/baseline.conf
+            env:
+              context: "Test Context"
+            
+            jobs:
+              - type: "spider"
+                parameters:
+                  url: "https://scientificamerican.com"
+            
+              - type: "passiveScan-config"
+                parameters:
+                  maxAlertsPerRule: 10
+            
+              - type: "report"
+                parameters:
+                  template: "modern-html"
+                  reportFile: "/zap/wrk/zap_report.html"
+                  reportTitle: "ZAP Security Scan Report"
+                  reportDescription: "ZAP automated security scan report."
+          EOF
+
+
       - name: Run ZAP Baseline Scan
         run: |
           docker run --rm \
