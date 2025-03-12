@@ -34,13 +34,12 @@ jobs:
                 maxAlertsPerRule: 10
             - type: "report"
               parameters:
-                format: "html"
                 template: "traditional-html"
+                reportFile: "/zap/wrk/zap_report.html"
                 reportTitle: "ZAP Security Scan Report"
                 reportDescription: "ZAP automated security scan report."
-                filename: "/zap/wrk/zap_report.html"
           EOF
-          cat $GITHUB_WORKSPACE/baseline.conf  # Verify the file contents
+
 
 
 
