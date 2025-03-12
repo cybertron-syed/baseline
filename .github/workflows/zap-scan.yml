@@ -17,19 +17,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create baseline.conf
+      - name: Create baseline.conf (Automation Plan)
         run: |
           cat <<EOF > $GITHUB_WORKSPACE/baseline.conf
-          {
-            "target": "https://scientificamerican.com",
-            "format": "html",
-            "output": "zap_report.html",
-            "minLevel": "Low",
-            "reportTitle": "ZAP Security Scan Report",
-            "contextFile": "zap_context.context"
-          }
+          env:
+            contexts:
+              - name: "Test Context"
+                urls:
+                  - "https://scientificamerican.com"
+          jobs:
+            - type: "spider"
+              parameters:
+                context: "Test Context"
+            - type: "passiveScan-config"
+              parameters:
+                maxAlertsPerRule: 10
+            - type: "report"
+              parameters:
+                format: "html"
+                template: "traditional-html"
+                reportTitle: "ZAP Security Scan Report"
+                reportDescription: "ZAP automated security scan report."
+                filename: "/zap/wrk/zap_report.html"
           EOF
-          cat $GITHUB_WORKSPACE/baseline.conf  # Verify contents
+          cat $GITHUB_WORKSPACE/baseline.conf  # Verify the file contents
+
 
 
       - name: Run ZAP Baseline Scan
