@@ -25,7 +25,10 @@ jobs:
         run: |
           cat <<EOF > $GITHUB_WORKSPACE/baseline.conf
             env:
-              context: "Test Context"
+              contexts:
+                - name: "Test Context"
+                  urls:
+                    - "https://scientificamerican.com"
             
             jobs:
               - type: "spider"
@@ -35,8 +38,7 @@ jobs:
             
               - type: "passiveScan-config"
                 parameters:
-                  context: "Test Context"
-                  maxAlertsPerRule: 10
+                  maxAlertsPerRule: 10  # Removed invalid 'context' parameter
             
               - type: "report"
                 parameters:
@@ -44,7 +46,8 @@ jobs:
                   reportFile: "/zap/wrk/zap_report.html"
                   reportTitle: "ZAP Security Scan Report"
                   reportDescription: "ZAP automated security scan report."
-          EOF
+
+             EOF
 
 
       - name: Run ZAP Baseline Scan
