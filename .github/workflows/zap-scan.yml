@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch:
 
 jobs:
   zap_scan:
@@ -14,12 +14,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up workspace
+      - name: Set up workspace and ensure `baseline.conf` exists
         run: |
           mkdir -p $GITHUB_WORKSPACE/zap
-          touch $GITHUB_WORKSPACE/zap/baseline.conf
+          echo "# ZAP Baseline Scan Configuration" > $GITHUB_WORKSPACE/zap/baseline.conf
+          echo "ignore-alerts=None" >> $GITHUB_WORKSPACE/zap/baseline.conf
+          echo "max-duration=600" >> $GITHUB_WORKSPACE/zap/baseline.conf
+          echo "context=None" >> $GITHUB_WORKSPACE/zap/baseline.conf
 
       - name: Verify directory structure
+        run: tree $GITHUB_WORKSPACE
+
+      - name: Check if `baseline.conf` is present
         run: ls -lah $GITHUB_WORKSPACE/zap
 
       - name: Run ZAP Baseline Scan
