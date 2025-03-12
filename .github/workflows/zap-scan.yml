@@ -7,52 +7,30 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch: # Allows manual trigger
 
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Create baseline.conf (Automation Plan)
+      - name: Ensure ZAP workspace is writable
         run: |
-          cat <<EOF > $GITHUB_WORKSPACE/baseline.conf
-          env:
-            contexts:
-              - name: "Test Context"
-                urls:
-                  - "https://scientificamerican.com"
-          jobs:
-            - type: "spider"
-              parameters:
-                context: "Test Context"
-            - type: "passiveScan-config"
-              parameters:
-                maxAlertsPerRule: 10
-            - type: "report"
-              parameters:
-                template: "traditional-html"
-                reportFile: "/zap/wrk/zap_report.html"
-                reportTitle: "ZAP Security Scan Report"
-                reportDescription: "ZAP automated security scan report."
-          EOF
-
-
-
+          mkdir -p $GITHUB_WORKSPACE/zap_wrk
+          chmod -R 777 $GITHUB_WORKSPACE/zap_wrk
 
       - name: Run ZAP Baseline Scan
         run: |
           docker run --rm \
+            -v "$GITHUB_WORKSPACE/zap_wrk:/zap/wrk" \
             -v "$GITHUB_WORKSPACE/baseline.conf:/zap/baseline.conf" \
-            -v "$GITHUB_WORKSPACE:/zap/wrk" \
             ghcr.io/zaproxy/zaproxy:stable \
             zap.sh -cmd -autorun /zap/baseline.conf
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
-          name: zap-report
-          path: $GITHUB_WORKSPACE/zap_report.html
+          name: ZAP-Report
+          path: $GITHUB_WORKSPACE/zap_wrk/zap_report.html
