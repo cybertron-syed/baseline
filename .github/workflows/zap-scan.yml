@@ -1,4 +1,4 @@
-name: ZAP Security Scan
+ name: ZAP Security Scan
 
 on:
   push:
@@ -17,11 +17,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up baseline.conf
+      - name: Create baseline.conf
         run: |
-          mkdir -p /home/zap
-          rm -rf /home/zap/baseline.conf  # Ensure it's not a directory
-          cat <<EOF > /home/zap/baseline.conf
+          cat <<EOF > $GITHUB_WORKSPACE/baseline.conf
           target=https://scientificamerican.com
           format=html
           output=zap_report.html
@@ -29,18 +27,18 @@ jobs:
           reportTitle=ZAP Security Scan Report
           contextFile=zap_context.context
           EOF
-          cat /home/zap/baseline.conf  # Verify contents
+          cat $GITHUB_WORKSPACE/baseline.conf  # Verify contents
 
       - name: Run ZAP Baseline Scan
         run: |
           docker run --rm \
-            -v "/home/zap/baseline.conf:/home/zap/baseline.conf" \
-            -v "$PWD:/zap/wrk" \
+            -v "$GITHUB_WORKSPACE/baseline.conf:/zap/baseline.conf" \
+            -v "$GITHUB_WORKSPACE:/zap/wrk" \
             ghcr.io/zaproxy/zaproxy:stable \
-            zap.sh -cmd -autorun /home/zap/baseline.conf
+            zap.sh -cmd -autorun /zap/baseline.conf
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
           name: zap-report
-          path: zap_report.html
+          path: $GITHUB_WORKSPACE/zap_report.html
