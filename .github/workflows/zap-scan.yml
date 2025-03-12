@@ -47,7 +47,7 @@ jobs:
                   reportTitle: "ZAP Security Scan Report"
                   reportDescription: "ZAP automated security scan report."
 
-             EOF
+          EOF
 
 
       - name: Run ZAP Baseline Scan
