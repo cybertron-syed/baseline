@@ -1,10 +1,13 @@
-name: ZAP Baseline Scan
+name: ZAP Security Scan
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual trigger
 
 jobs:
   zap_scan:
@@ -14,37 +17,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up workspace and ensure `baseline.conf` exists
+      - name: Set up baseline.conf
         run: |
-          mkdir -p $GITHUB_WORKSPACE/zap
-          echo "# ZAP Baseline Scan Configuration" > $GITHUB_WORKSPACE/zap/baseline.conf
-          echo "ignore-alerts=None" >> $GITHUB_WORKSPACE/zap/baseline.conf
-          echo "max-duration=600" >> $GITHUB_WORKSPACE/zap/baseline.conf
-          echo "context=None" >> $GITHUB_WORKSPACE/zap/baseline.conf
+          mkdir -p /home/zap
+          rm -rf /home/zap/baseline.conf  # Ensure it's not a directory
+          cat <<EOF > /home/zap/baseline.conf
+          target=https://scientificamerican.com
+          format=html
+          output=zap_report.html
+          minLevel=Low
+          reportTitle=ZAP Security Scan Report
+          contextFile=zap_context.context
+          EOF
+          cat /home/zap/baseline.conf  # Verify contents
 
-      - name: Verify directory structure
-        run: tree $GITHUB_WORKSPACE
-
-      - name: Check if `baseline.conf` is present
-        run: ls -lah $GITHUB_WORKSPACE/zap
-
-      - name: Run ZAP Baseline Scan test
+      - name: Run ZAP Baseline Scan
         run: |
-            docker run --rm \
-            -v "$(pwd)/baseline.conf:/home/zap/baseline.conf" \
-            -v "$(pwd)/zap_report.html:/home/zap/zap_report.html" \
+          docker run --rm \
+            -v "/home/zap/baseline.conf:/home/zap/baseline.conf" \
+            -v "$PWD:/zap/wrk" \
             ghcr.io/zaproxy/zaproxy:stable \
             zap.sh -cmd -autorun /home/zap/baseline.conf
-        
 
-
-
-      # - name: Run ZAP Baseline Scan
-      #   run: |
-      #     docker run --rm ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t https://www.scientificamerican.com -d
-          
-      - name: Upload ZAP Report as Artifact
+      - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
-          name: zap-scan-report
-          path: zap/testreport.html
+          name: zap-report
+          path: zap_report.html
