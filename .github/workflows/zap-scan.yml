@@ -33,8 +33,7 @@ jobs:
           docker run --rm \
             -v $GITHUB_WORKSPACE/zap:/zap/wrk:rw \
             ghcr.io/zaproxy/zaproxy:stable \
-            zap-baseline.py -t https://www.scientificamerican.com \
-            -g /zap/wrk/baseline.conf -r /zap/wrk/testreport.html
+            zap-baseline.py -t https://www.scientificamerican.com 
 
       - name: Upload ZAP Report as Artifact
         uses: actions/upload-artifact@v4
