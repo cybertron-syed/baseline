@@ -28,9 +28,16 @@ jobs:
       - name: Check if `baseline.conf` is present
         run: ls -lah $GITHUB_WORKSPACE/zap
 
-      - name: Run ZAP Baseline Scan
+      - name: Run ZAP Baseline Scan test
         run: |
-          docker run --rm ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t https://www.scientificamerican.com -d
+          docker run -v $(pwd)/baseline.conf:/home/zap/baseline.conf \
+          ghcr.io/zaproxy/zaproxy:stable \
+          zap.sh -cmd -autorun /home/zap/baseline.conf
+
+
+      # - name: Run ZAP Baseline Scan
+      #   run: |
+      #     docker run --rm ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t https://www.scientificamerican.com -d
           
       - name: Upload ZAP Report as Artifact
         uses: actions/upload-artifact@v4
