@@ -13,48 +13,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Ensure ZAP workspace is writable
-        run: |
-          mkdir -p $GITHUB_WORKSPACE/zap_wrk
-          chmod -R 777 $GITHUB_WORKSPACE/zap_wrk
-
-      # - name: Create baseline.conf (Automation Plan)
-      #   run: |
-      #     cat <<EOF > $GITHUB_WORKSPACE/baseline.conf
-      #       env:
-      #         contexts:
-      #           - name: "Test Context"
-      #             urls:
-      #               - "https://scientificamerican.com"
-            
-      #       jobs:
-      #         - type: "spider"
-      #           parameters:
-      #             context: "Test Context"
-      #             url: "https://scientificamerican.com"
-            
-      #         - type: "passiveScan-config"
-      #           parameters:
-      #             maxAlertsPerRule: 10  # Removed invalid 'context' parameter
-            
-      #         - type: "report"
-      #           parameters:
-      #             template: "traditional-html"
-      #             reportFile: "/zap/wrk/zap_report.html"
-      #             reportTitle: "ZAP Security Scan Report"
-      #             reportDescription: "ZAP automated security scan report."
-
-      #     EOF
-
-
       - name: Run ZAP Baseline Scan
         run: |
             docker run --user root -v $(pwd):/zap/wrk/:rw -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
             -t https://www.scientificamerican.com -g gen.conf -r testreport.html
 
-
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
           name: ZAP-Report
-          path: $GITHUB_WORKSPACE/zap_wrk/zap_report.html
+          path: $GITHUB_WORKSPACE/zap_report.html
