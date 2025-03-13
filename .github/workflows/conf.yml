@@ -1,4 +1,4 @@
-name: Test
+name: Config
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
           zap-baseline.py -t https://www.scientificamerican.com -g baseline.conf -r testreport.html
 
       - name: Upload ZAP Baseline Config
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: zap-baseline-config
           path: baseline.conf
