@@ -16,17 +16,17 @@ jobs:
       - name: Run ZAP Baseline Scan
         continue-on-error: true
         run: |
-          docker run -v $(pwd):/zap/wrk/:rw -t ghcr.io/zaproxy/zaproxy:stable \
+          docker run -v zap:/zap/wrk/:rw -t ghcr.io/zaproxy/zaproxy:stable \
           zap-baseline.py -t https://www.scientificamerican.com -g baseline.conf -r testreport.html
 
       - name: Upload ZAP Baseline Config
         uses: actions/upload-artifact@v4
         with:
           name: zap-baseline-config
-          path: $GITHUB_WORKSPACE/zap/baseline.conf
+          path: zap/baseline.conf
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
           name: ZAP-Report
-          path: $GITHUB_WORKSPACE/zap/zap_report.html
+          path: zap/zap_report.html
