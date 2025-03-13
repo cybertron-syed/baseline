@@ -23,10 +23,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: zap-baseline-config
-          path: baseline.conf
+          path: $GITHUB_WORKSPACE/zap/baseline.conf
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
           name: ZAP-Report
-          path: $GITHUB_WORKSPACE/zap_report.html
+          path: $GITHUB_WORKSPACE/zap/zap_report.html
