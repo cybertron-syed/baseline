@@ -16,7 +16,7 @@ jobs:
       - name: Run ZAP Baseline Scan
         continue-on-error: true
         run: |
-          docker run --user root /
+          docker run --user root \
           -v zap:/zap/wrk/:rw -t ghcr.io/zaproxy/zaproxy:stable \
           zap-baseline.py -t https://www.scientificamerican.com -g baseline.conf -r testreport.html
 
