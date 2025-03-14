@@ -14,6 +14,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: check pwd
+        run: |
+          pwd
       - name: Run ZAP Baseline Scan
         run: |
           docker run --user root \
