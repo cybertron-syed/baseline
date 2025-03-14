@@ -25,10 +25,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: zap-baseline-config
-          path: baseline.conf
+          path: ops_utils/zap/baseline.conf
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
           name: ZAP-Report
-          path: testreport.html
+          path: ops_utils/zap/testreport.html
