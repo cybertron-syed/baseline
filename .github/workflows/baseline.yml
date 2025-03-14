@@ -20,7 +20,7 @@ jobs:
       - name: Run ZAP Baseline Scan
         run: |
           docker run --user root \
-            -v $(pwd):/zap/wrk/:rw \
+            -v zap:/zap/wrk/:rw \
             -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
             -t https://www.scientificamerican.com -g /zap/wrk/gen.conf -r /zap/wrk/testreport.html
 
