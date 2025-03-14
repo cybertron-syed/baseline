@@ -1,9 +1,7 @@
 name: Config
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   zap_scan:
